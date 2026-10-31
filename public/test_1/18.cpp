@@ -1,10 +1,10 @@
-#include <limits.h>
+#include <climits>
 
-typedef struct Node {
+struct Node {
     int value;
     Node* left;
     Node* right;
-} Node;
+};
 
 int findMax(Node *root) {
     if (!root) return INT_MIN;

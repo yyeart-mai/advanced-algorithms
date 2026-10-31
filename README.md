@@ -1,1 +1,4 @@
-# advanced alghorithms and discrete analysis
+# Продвинутые алгоритмы и дискретный анализ
+
+- [Учебный контекст и изученные темы](STUDY_CONTEXT.md)
+- [Архив задач и решений](SOLVED_TASKS.md)
