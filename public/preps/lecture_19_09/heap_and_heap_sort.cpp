@@ -5,6 +5,43 @@
 #include <utility>
 #include <vector>
 
+// Простая max-heap для int: родитель i находится в (i - 1) / 2.
+class SimpleHeap {
+    std::vector<int> a;
+public:
+    bool empty() const { return a.empty(); }
+    int top() const { return a[0]; }
+    void push(int x) {
+        a.push_back(x);
+        int i = static_cast<int>(a.size()) - 1;
+        while (i > 0 && a[(i - 1) / 2] < a[i]) {
+            std::swap(a[(i - 1) / 2], a[i]);
+            i = (i - 1) / 2;
+        }
+    }
+    int pop() {
+        int result = a[0];
+        a[0] = a.back();
+        a.pop_back();
+        int i = 0;
+        while (2 * i + 1 < static_cast<int>(a.size())) {
+            int child = 2 * i + 1;
+            if (child + 1 < static_cast<int>(a.size()) && a[child + 1] > a[child]) ++child;
+            if (a[i] >= a[child]) break;
+            std::swap(a[i], a[child]);
+            i = child;
+        }
+        return result;
+    }
+};
+
+// Извлекаем максимумы в конец массива. O(n log n) времени, O(n) памяти.
+void heapSortSimple(std::vector<int>& a) {
+    SimpleHeap heap;
+    for (int x : a) heap.push(x);
+    for (int i = static_cast<int>(a.size()) - 1; i >= 0; --i) a[i] = heap.pop();
+}
+
 template <class T, class Compare = std::less<T>>
 class BinaryHeap {
     std::vector<T> a;
@@ -59,6 +96,6 @@ int main() {
     int n; if (!(std::cin >> n)) return 0;
     std::vector<int> a(n);
     for (int& x : a) std::cin >> x;
-    heapSort(a.begin(), a.end());
+    heapSortSimple(a);
     for (int i = 0; i < n; ++i) std::cout << a[i] << (i + 1 == n ? '\n' : ' ');
 }

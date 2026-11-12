@@ -5,6 +5,102 @@
 #include <utility>
 #include <vector>
 
+// Простая версия для long long. Индекс задаётся размером левого поддерева.
+class SimpleImplicitTreap {
+    struct Node {
+        long long value, sum;
+        int size = 1;
+        std::uint32_t priority;
+        bool reversed = false;
+        Node *left = nullptr, *right = nullptr;
+        Node(long long x, std::uint32_t p) : value(x), sum(x), priority(p) {}
+    };
+    Node* root = nullptr;
+    std::uint32_t randomState = 2463534242u;
+    std::uint32_t randomPriority() {
+        randomState ^= randomState << 13;
+        randomState ^= randomState >> 17;
+        randomState ^= randomState << 5;
+        return randomState;
+    }
+    static int size(Node* p) { return p ? p->size : 0; }
+    static long long sum(Node* p) { return p ? p->sum : 0; }
+    static void push(Node* p) {
+        if (!p || !p->reversed) return;
+        std::swap(p->left, p->right);
+        if (p->left) p->left->reversed ^= 1;
+        if (p->right) p->right->reversed ^= 1;
+        p->reversed = false;
+    }
+    static void update(Node* p) {
+        if (!p) return;
+        p->size = 1 + size(p->left) + size(p->right);
+        p->sum = sum(p->left) + p->value + sum(p->right);
+    }
+    static void split(Node* p, int leftSize, Node*& a, Node*& b) {
+        if (!p) { a = b = nullptr; return; }
+        push(p);
+        if (size(p->left) >= leftSize) {
+            split(p->left, leftSize, a, p->left);
+            b = p;
+        } else {
+            split(p->right, leftSize - size(p->left) - 1, p->right, b);
+            a = p;
+        }
+        update(p);
+    }
+    static Node* merge(Node* a, Node* b) {
+        if (!a) return b;
+        if (!b) return a;
+        if (a->priority > b->priority) {
+            push(a);
+            a->right = merge(a->right, b);
+            update(a);
+            return a;
+        }
+        push(b);
+        b->left = merge(a, b->left);
+        update(b);
+        return b;
+    }
+    static void clear(Node* p) {
+        if (!p) return;
+        clear(p->left); clear(p->right); delete p;
+    }
+public:
+    ~SimpleImplicitTreap() { clear(root); }
+    SimpleImplicitTreap() = default;
+    SimpleImplicitTreap(const SimpleImplicitTreap&) = delete;
+    SimpleImplicitTreap& operator=(const SimpleImplicitTreap&) = delete;
+    void insert(int pos, long long value) {
+        Node *a, *b;
+        split(root, pos, a, b);
+        root = merge(merge(a, new Node(value, randomPriority())), b);
+    }
+    void erase(int pos) {
+        Node *a, *b, *discard, *c;
+        split(root, pos, a, b);
+        split(b, 1, discard, c);
+        clear(discard);
+        root = merge(a, c);
+    }
+    void reverse(int l, int r) {
+        Node *a, *b, *middle, *c;
+        split(root, l, a, b);
+        split(b, r - l, middle, c);
+        if (middle) middle->reversed ^= 1;
+        root = merge(a, merge(middle, c));
+    }
+    long long rangeSum(int l, int r) {
+        Node *a, *b, *middle, *c;
+        split(root, l, a, b);
+        split(b, r - l, middle, c);
+        long long answer = sum(middle);
+        root = merge(a, merge(middle, c));
+        return answer;
+    }
+};
+
 // Позиция элемента определяется размером левого поддерева, а не ключом.
 // T поддерживает сложение и нулевое значение.
 template <class T>
@@ -83,7 +179,7 @@ public:
 
 int main() {
     int q; if (!(std::cin >> q)) return 0;
-    ImplicitTreap<long long> tree;
+    SimpleImplicitTreap tree;
     while (q--) {
         std::string op; std::cin >> op;
         if (op == "insert") { int p; long long x; std::cin >> p >> x; tree.insert(p, x); }

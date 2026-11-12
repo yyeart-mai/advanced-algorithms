@@ -3,6 +3,27 @@
 #include <iterator>
 #include <vector>
 
+// Простая версия: индексы в отсортированном vector<long long>.
+int lowerBoundSimple(const std::vector<long long>& a, long long x) {
+    int left = 0, right = static_cast<int>(a.size());
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (a[mid] < x) left = mid + 1;
+        else right = mid;
+    }
+    return left;
+}
+
+int upperBoundSimple(const std::vector<long long>& a, long long x) {
+    int left = 0, right = static_cast<int>(a.size());
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (a[mid] <= x) left = mid + 1;
+        else right = mid;
+    }
+    return left;
+}
+
 // [first, last) должен быть отсортирован по comp; нужны итераторы случайного доступа.
 template <class RandomIt, class T, class Compare = std::less<>>
 RandomIt lowerBound(RandomIt first, RandomIt last, const T& value, Compare comp = {}) {
@@ -31,10 +52,10 @@ int main() {
     for (auto& x : a) std::cin >> x;
     while (q--) {
         long long x; std::cin >> x;
-        auto lo = lowerBound(a.begin(), a.end(), x);
-        auto hi = upperBound(a.begin(), a.end(), x);
-        std::cout << (lo == a.end() ? -1 : int(lo - a.begin())) << ' '
-                  << (hi == a.end() ? -1 : int(hi - a.begin())) << ' '
+        int lo = lowerBoundSimple(a, x);
+        int hi = upperBoundSimple(a, x);
+        std::cout << (lo == n ? -1 : lo) << ' '
+                  << (hi == n ? -1 : hi) << ' '
                   << hi - lo << '\n';
     }
 }

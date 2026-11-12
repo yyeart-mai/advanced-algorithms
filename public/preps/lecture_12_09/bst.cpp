@@ -5,6 +5,74 @@
 #include <string>
 #include <vector>
 
+// Простое несбалансированное дерево целых чисел. В худшем случае O(n) на операцию.
+class SimpleBST {
+    struct Node {
+        int key;
+        Node* left = nullptr;
+        Node* right = nullptr;
+        explicit Node(int x) : key(x) {}
+    };
+    Node* root = nullptr;
+
+    static Node* insert(Node* p, int x) {
+        if (!p) return new Node(x);
+        if (x < p->key) p->left = insert(p->left, x);
+        if (x > p->key) p->right = insert(p->right, x);
+        return p;
+    }
+    static Node* erase(Node* p, int x) {
+        if (!p) return nullptr;
+        if (x < p->key) p->left = erase(p->left, x);
+        else if (x > p->key) p->right = erase(p->right, x);
+        else {
+            if (!p->left) { Node* right = p->right; delete p; return right; }
+            if (!p->right) { Node* left = p->left; delete p; return left; }
+            Node* successor = p->right;
+            while (successor->left) successor = successor->left;
+            p->key = successor->key;
+            p->right = erase(p->right, successor->key);
+        }
+        return p;
+    }
+    static void clear(Node* p) {
+        if (!p) return;
+        clear(p->left); clear(p->right); delete p;
+    }
+public:
+    ~SimpleBST() { clear(root); }
+    SimpleBST() = default;
+    SimpleBST(const SimpleBST&) = delete;
+    SimpleBST& operator=(const SimpleBST&) = delete;
+    void insert(int x) { root = insert(root, x); }
+    void erase(int x) { root = erase(root, x); }
+    bool contains(int x) const {
+        Node* p = root;
+        while (p) {
+            if (x < p->key) p = p->left;
+            else if (x > p->key) p = p->right;
+            else return true;
+        }
+        return false;
+    }
+    bool rotateRootLeft() {
+        if (!root || !root->right) return false;
+        Node* newRoot = root->right;
+        root->right = newRoot->left;
+        newRoot->left = root;
+        root = newRoot;
+        return true;
+    }
+    bool rotateRootRight() {
+        if (!root || !root->left) return false;
+        Node* newRoot = root->left;
+        root->left = newRoot->right;
+        newRoot->right = root;
+        root = newRoot;
+        return true;
+    }
+};
+
 // Учебное несбалансированное BST: в худшем случае высота O(n).
 template <class Key, class Compare = std::less<Key>>
 class BST {
@@ -71,7 +139,7 @@ public:
 
 int main() {
     int q; if (!(std::cin >> q)) return 0;
-    BST<int> tree;
+    SimpleBST tree;
     while (q--) {
         std::string command; std::cin >> command;
         if (command == "rotate_left") tree.rotateRootLeft();

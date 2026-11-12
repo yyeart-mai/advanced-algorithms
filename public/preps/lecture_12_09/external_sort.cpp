@@ -8,6 +8,49 @@
 #include <type_traits>
 #include <vector>
 
+// Простая версия для long long. Серия — отсортированный блок на диске;
+// в памяти одновременно один блок и по одному числу из каждой серии.
+void externalSortSimple(std::istream& input, std::ostream& output,
+                        std::size_t n, std::size_t chunkSize) {
+    if (chunkSize == 0) throw std::invalid_argument("chunkSize must be positive");
+    using File = std::unique_ptr<std::FILE, decltype(&std::fclose)>;
+    std::vector<File> runs;
+    std::vector<long long> chunk;
+
+    for (std::size_t read = 0; read < n;) {
+        chunk.clear();
+        while (read < n && chunk.size() < chunkSize) {
+            long long x;
+            if (!(input >> x)) throw std::runtime_error("not enough input numbers");
+            chunk.push_back(x);
+            ++read;
+        }
+        std::sort(chunk.begin(), chunk.end());
+        File file(std::tmpfile(), &std::fclose);
+        if (!file) throw std::runtime_error("cannot create temporary file");
+        if (std::fwrite(chunk.data(), sizeof(long long), chunk.size(), file.get()) != chunk.size())
+            throw std::runtime_error("cannot write temporary file");
+        std::rewind(file.get());
+        runs.push_back(std::move(file));
+    }
+
+    // Куча хранит пару (число, номер серии); сверху минимальное число.
+    using Head = std::pair<long long, std::size_t>;
+    std::priority_queue<Head, std::vector<Head>, std::greater<Head>> heap;
+    for (std::size_t i = 0; i < runs.size(); ++i) {
+        long long x;
+        if (std::fread(&x, sizeof x, 1, runs[i].get()) == 1) heap.push({x, i});
+    }
+    while (!heap.empty()) {
+        auto [value, run] = heap.top();
+        heap.pop();
+        output << value << '\n';
+        long long next;
+        if (std::fread(&next, sizeof next, 1, runs[run].get()) == 1)
+            heap.push({next, run});
+    }
+}
+
 // Файлы временных серий хранятся на диске. Число открытых файлов равно числу серий.
 // T должен быть тривиально копируемым и поддерживать потоковый ввод/вывод.
 template <class T, class Compare = std::less<T>>
@@ -55,5 +98,5 @@ void externalSort(std::istream& input, std::ostream& output, std::size_t n,
 int main() {
     std::size_t n, chunkSize;
     if (!(std::cin >> n >> chunkSize)) return 0;
-    externalSort<long long>(std::cin, std::cout, n, chunkSize);
+    externalSortSimple(std::cin, std::cout, n, chunkSize);
 }

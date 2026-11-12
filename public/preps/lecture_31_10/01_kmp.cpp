@@ -14,7 +14,8 @@ std::vector<int> prefixFunction(const std::string& s) {
     return pi;
 }
 
-// Произвольные сравнимые символы и входные итераторы; вывод индексов через OutputIt.
+// Произвольные сравнимые символы и входные итераторы.
+// Индексы выдаются через OutputIt.
 template <class PatternIt, class TextIt, class OutputIt>
 void kmpGeneric(PatternIt pFirst, PatternIt pLast, TextIt tFirst, TextIt tLast, OutputIt out) {
     using Symbol = typename std::iterator_traits<PatternIt>::value_type;

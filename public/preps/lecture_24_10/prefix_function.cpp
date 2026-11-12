@@ -3,6 +3,17 @@
 #include <string>
 #include <vector>
 
+std::vector<int> prefixFunctionSimple(const std::string& s) {
+    std::vector<int> pi(s.size());
+    for (int i = 1; i < static_cast<int>(s.size()); ++i) {
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) ++j;
+        pi[i] = j;
+    }
+    return pi;
+}
+
 // pi[i] — длина наибольшего собственного префикса отрезка [0, i],
 // совпадающего с его суффиксом. Пример дополнительный: название функции
 // препроцессинга в конспекте лекции не уточнено.
@@ -22,7 +33,7 @@ std::vector<std::size_t> prefixFunction(InputIt first, InputIt last) {
 
 int main() {
     std::string s; std::getline(std::cin, s);
-    auto pi = prefixFunction(s.begin(), s.end());
+    auto pi = prefixFunctionSimple(s);
     for (std::size_t i = 0; i < pi.size(); ++i)
         std::cout << pi[i] << (i + 1 == pi.size() ? '\n' : ' ');
 }
