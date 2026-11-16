@@ -38,6 +38,73 @@ public:
     }
 };
 
+const int ALPHABET_SIZE = 256;
+
+// Построение автомата
+std::vector<std::vector<int>> buildAutomaton(const std::string& pattern) {
+    int m = pattern.size();
+
+    // pi — префикс-функция
+    std::vector<int> pi(m, 0);
+
+    for (int i = 1; i < m; i++) {
+        int j = pi[i - 1];
+
+        while (j > 0 && pattern[i] != pattern[j]) {
+            j = pi[j - 1];
+        }
+
+        if (pattern[i] == pattern[j]) {
+            j++;
+        }
+
+        pi[i] = j;
+    }
+
+    // Таблица переходов
+    std::vector<std::vector<int>> dfa(m + 1,
+                            std::vector<int>(ALPHABET_SIZE, 0));
+
+    for (int state = 0; state <= m; state++) {
+        for (int c = 0; c < ALPHABET_SIZE; c++) {
+
+            if (state < m && c == (unsigned char)pattern[state]) {
+                dfa[state][c] = state + 1;
+            }
+            else if (state == 0) {
+                dfa[state][c] = 0;
+            }
+            else {
+                dfa[state][c] = dfa[pi[state - 1]][c];
+            }
+        }
+    }
+
+    return dfa;
+}
+
+// Поиск образца
+void KMPRealTime(const std::string& text, const std::string& pattern) {
+    if (pattern.empty()) {
+        std::cout << "Пустой образец\n";
+        return;
+    }
+
+    auto dfa = buildAutomaton(pattern);
+
+    int state = 0;
+    int m = pattern.size();
+
+    for (int i = 0; i < text.size(); i++) {
+        state = dfa[state][(unsigned char)text[i]];
+
+        if (state == m) {
+            std::cout << "Найдено в позиции "
+                 << i - m + 1 << '\n';
+        }
+    }
+}
+
 // Обобщённая версия. index(symbol) должен вернуть число от 0 до alphabetSize-1.
 // Если index работает за O(1), то feed тоже работает за O(1).
 template <class Symbol, class Index>

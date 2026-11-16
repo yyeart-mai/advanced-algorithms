@@ -14,6 +14,23 @@ std::vector<int> prefixFunction(const std::string& s) {
     return pi;
 }
 
+std::vector<int> kmpSearch(const std::string& pattern, const std::string& text) {
+    std::vector<int> answer;
+    int m = static_cast<int>(pattern.size());
+    if (m == 0) return answer;
+    auto pi = prefixFunction(pattern);
+    int j = 0;
+    for (int i = 0; i < static_cast<int>(text.size()); ++i) {
+        while (j > 0 && text[i] != pattern[j]) j = pi[j - 1];
+        if (text[i] == pattern[j]) ++j;
+        if (j == m) {
+            answer.push_back(i - m + 1);
+            j = pi[m - 1];
+        }
+    }
+    return answer;
+}
+
 // Произвольные сравнимые символы и входные итераторы.
 // Индексы выдаются через OutputIt.
 template <class PatternIt, class TextIt, class OutputIt>
