@@ -1,0 +1,66 @@
+\documentclass[12pt,a4paper,oneside,fleqn]{article}
+\usepackage{cmap}
+\usepackage[pass]{geometry}
+\usepackage{styles/log-style}
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\begin{center}
+\bfseries
+
+{\Large Московский авиационный институт\\ (национальный исследовательский университет)
+
+}
+
+\vspace{48pt}
+
+{\large Факультет информационных технологий и прикладной математики
+}
+
+\vspace{36pt}
+
+{\large Кафедра вычислительной математики и~программирования
+
+}
+
+
+\vspace{48pt}
+
+Лабораторная работа \textnumero 1 по курсу \enquote{Дискретный анализ}
+
+\end{center}
+
+\vspace{72pt}
+
+\begin{flushright}
+\begin{tabular}{rl}
+Студент: & Смирнов В.\,А. \\
+Преподаватель: & Сахарин Н.\,А. \\
+Группа: & М8О-206Б-25 \\
+Дата: & 20 ноября 2026 года \\
+Оценка: & \\
+Подпись: & \\
+\end{tabular}
+\end{flushright}
+
+\vfill
+
+\begin{center}
+\bfseries
+Москва, \the\year
+\end{center}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+\newgeometry{left=25mm,right=25mm,top=23mm,bottom=20mm,includefoot}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+\input{src/problem}
+\input{src/src}
+\input{src/diary}
+\clearpage
+\input{src/benchmark}
+\input{src/thinks}
+
+\end{document}

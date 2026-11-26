@@ -1,0 +1,48 @@
+OK
+OK
+OK
+OK: 1
+OK
+OK
+OK
+OK
+OK: 4
+OK
+OK
+OK
+OK
+NoSuchWord
+OK: 4
+OK
+OK
+NoSuchWord
+OK: 5
+OK
+OK: 8
+Process 89113 is not debuggable. Due to security restrictions, leaks can only show or save contents of readonly memory of restricted processes.
+
+Process:         dictionary [89113]
+Path:            /Users/USER/*/dictionary
+Load Address:    0x104528000
+Identifier:      dictionary
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  leaks [89112]
+Target Type:     live task
+
+Date/Time:       2026-11-26 20:02:14.520 +0300
+Launch Time:     2026-11-26 20:02:14.508 +0300
+OS Version:      macOS 26.7.3 (25G342)
+Report Version:  7
+Analysis Tool:   /usr/bin/leaks
+
+Physical footprint:         2208K
+Physical footprint (peak):  2208K
+Idle exit:                  untracked
+----
+
+leaks Report Version: 4.0, multi-line stacks
+Process 89113: 189 nodes malloced for 21 KB
+Process 89113: 0 leaks for 0 total leaked bytes.
+

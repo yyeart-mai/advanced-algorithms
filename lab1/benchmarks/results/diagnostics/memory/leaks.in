@@ -1,0 +1,21 @@
++ a 1
++ aa 2
+- aa
+a
+- a
++ a 3
++ aa 4
+- a
+aa
++ saved 5
+! Save memory-snapshot.bin
++ old 6
+! Load memory-snapshot.bin
+old
+aa
++ old 7
+! Load memory-snapshot.bin
+old
+saved
++ tail 8
+tail

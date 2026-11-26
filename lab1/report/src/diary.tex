@@ -1,0 +1,32 @@
+\section{Дневник работы}
+\begingroup
+\raggedright
+
+При настройке использовались MacBook Pro с 16~ГБ памяти, macOS~26.7.1 и Apple Clang~21.0.0.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{@{}
+  >{\raggedright\arraybackslash}p{0.15\textwidth}
+  >{\raggedright\arraybackslash}p{0.23\textwidth}
+  >{\raggedright\arraybackslash}p{0.25\textwidth}
+  >{\raggedright\arraybackslash}p{0.32\textwidth}
+  @{}}
+\hline
+\textbf{Дата} & \textbf{Действие} & \textbf{Инструмент} & \textbf{Результат} \\
+\hline
+\endhead
+20.11.2026 & Проверка среды & \texttt{system\_profiler}, \texttt{sw\_vers}, Apple Clang & Определены параметры компьютера и версии ПО. \\
+\hline
+26.11.2026 & Сборка и проверка словаря & Make, Apple Clang, Python & Тесты прошли в обычной и отладочной сборках. Во второй проверены и связи между узлами. \\
+\hline
+26.11.2026 & Измерение производительности & Python & Выполнены 210 прогонов для семи сценариев, трёх размеров и двух типов ключей. Ответы сверены с ожидаемыми, вычислены медианы и диапазоны. \\
+\hline
+26.11.2026 & Профиль поиска & \texttt{sample} & Ветка чтения команд вошла в 2\,097 из 2\,565 выборок главного потока. \\
+\hline
+26.11.2026 & Проверка памяти & AddressSanitizer, \texttt{leaks} & Тесты словаря прошли. В отдельном сценарии \texttt{leaks} сообщил о нуле утечек. \\
+\hline
+\end{longtable}
+\endgroup
+\endgroup
